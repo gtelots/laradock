@@ -1434,6 +1434,20 @@ RUN if [ ${INSTALL_SUPERCRONIC} = true ]; then \
 ;fi
 
 ###########################################################################
+# SUPERVISOR:
+###########################################################################
+
+USER root
+
+ARG INSTALL_SUPERVISOR=false
+
+RUN if [ ${INSTALL_SUPERVISOR} = true ]; then \
+    apt-get update && apt-get install -y supervisor \
+;fi
+
+COPY ./supervisord.conf /etc/supervisor/supervisord.conf
+
+###########################################################################
 # Check PHP version:
 ###########################################################################
 
