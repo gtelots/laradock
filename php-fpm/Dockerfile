@@ -1365,7 +1365,7 @@ ARG INSTALL_MSGPACK=false
 RUN if [ ${INSTALL_MSGPACK} = true ]; then \
       pecl install msgpack; \
       docker-php-ext-enable msgpack; \
-      php -m | grep -q 'msgpack'; \
+      php -m | grep -oiE '^msgpack$'; \
     fi
 
 ###########################################################################
@@ -1377,7 +1377,7 @@ ARG INSTALL_IGBINARY=false
 RUN if [ ${INSTALL_IGBINARY} = true ]; then \
       pecl install igbinary; \
       docker-php-ext-enable igbinary; \
-      php -m | grep -q 'igbinary'; \
+      php -m | grep -oiE '^igbinary$'; \
     fi
 
 ###########################################################################
