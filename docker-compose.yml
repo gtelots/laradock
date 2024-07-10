@@ -213,6 +213,7 @@ services:
 
 ### PHP-FPM ##############################################
     php-fpm:
+      image: ttungbmt/php-fpm:${PHP_VERSION}
       build:
         context: ./php-fpm
         args:
@@ -300,6 +301,12 @@ services:
           - INSTALL_DOCKER_CLIENT=${PHP_FPM_INSTALL_DOCKER_CLIENT}
           - INSTALL_DNSUTILS=${PHP_FPM_INSTALL_DNSUTILS}
           - INSTALL_POPPLER_UTILS=${PHP_FPM_INSTALL_POPPLER_UTILS}
+          - INSTALL_MSGPACK=${PHP_FPM_INSTALL_MSGPACK}
+          - INSTALL_IGBINARY=${PHP_FPM_INSTALL_IGBINARY}
+          - TZ=${WORKSPACE_TIMEZONE}
+          - INSTALL_COMPOSER=${PHP_FPM_INSTALL_COMPOSER}
+          - INSTALL_GOSU=${PHP_FPM_INSTALL_GOSU}
+          - INSTALL_SUPERCRONIC=${PHP_FPM_INSTALL_SUPERCRONIC}
           - http_proxy
           - https_proxy
           - no_proxy
@@ -318,15 +325,16 @@ services:
         - DOCKER_TLS_CERTDIR=/certs
         - DOCKER_CERT_PATH=/certs/client
         - FAKETIME=${PHP_FPM_FAKETIME}
-      depends_on:
-        - workspace
+      # depends_on:
+      #   - workspace
       networks:
         - backend
-      links:
-        - docker-in-docker
+      # links:
+      #   - docker-in-docker
 
 ### PHP Worker ############################################
     php-worker:
+      image: ttungbmt/php-worker:${PHP_VERSION}
       build:
         context: ./php-worker
         args:

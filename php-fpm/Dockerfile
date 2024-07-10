@@ -1357,6 +1357,83 @@ RUN if [ ${INSTALL_DNSUTILS} = true ]; then \
 ;fi
 
 ###########################################################################
+# msgpack:
+###########################################################################
+
+ARG INSTALL_MSGPACK=false
+
+RUN if [ ${INSTALL_MSGPACK} = true ]; then \
+      pecl install msgpack; \
+      docker-php-ext-enable msgpack; \
+      php -m | grep -q 'msgpack'; \
+    fi
+
+###########################################################################
+# Igbinary:
+###########################################################################
+
+ARG INSTALL_IGBINARY=false
+
+RUN if [ ${INSTALL_IGBINARY} = true ]; then \
+      pecl install igbinary; \
+      docker-php-ext-enable igbinary; \
+      php -m | grep -q 'igbinary'; \
+    fi
+
+###########################################################################
+# Set Timezone
+###########################################################################
+
+ARG TZ=UTC
+ENV TZ ${TZ}
+
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+###########################################################################
+# Composer:
+###########################################################################
+
+USER root
+
+ARG INSTALL_COMPOSER=false
+
+RUN if [ ${INSTALL_COMPOSER} = true ]; then \
+    curl -sLS https://getcomposer.org/installer | php -- --install-dir=/usr/bin/ --filename=composer \
+;fi
+
+###########################################################################
+# GOSU:
+###########################################################################
+
+USER root
+
+ARG INSTALL_GOSU=false
+
+RUN if [ ${INSTALL_GOSU} = true ]; then \
+    apt-get update && apt-get install -y gosu \
+;fi
+
+###########################################################################
+# SUPERCRONIC:
+###########################################################################
+
+USER root
+
+ARG INSTALL_SUPERCRONIC=false
+
+ENV SUPERCRONIC_URL=https://github.com/aptible/supercronic/releases/download/v0.2.30/supercronic-linux-amd64 \
+    SUPERCRONIC=supercronic-linux-amd64 \
+    SUPERCRONIC_SHA1SUM=9f27ad28c5c57cd133325b2a66bba69ba2235799
+
+RUN if [ ${INSTALL_SUPERCRONIC} = true ]; then \
+    curl -fsSLO "$SUPERCRONIC_URL" \
+    && echo "${SUPERCRONIC_SHA1SUM}  ${SUPERCRONIC}" | sha1sum -c - \
+    && chmod +x "$SUPERCRONIC" \
+    && mv "$SUPERCRONIC" "/usr/local/bin/${SUPERCRONIC}" \
+    && ln -s "/usr/local/bin/${SUPERCRONIC}" /usr/local/bin/supercronic \
+;fi
+
+###########################################################################
 # Check PHP version:
 ###########################################################################
 
